@@ -1,0 +1,6 @@
+node_modules
+.serverless
+.webpack
+_warmup
+.vscode
+0*
