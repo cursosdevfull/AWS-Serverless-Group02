@@ -4,3 +4,4 @@ node_modules
 _warmup
 .vscode
 0*
+api*
