@@ -4,4 +4,12 @@ const listMedic = {
   handler: `${handlerPath(__dirname)}/controller/MedicController.list`,
 };
 
-export { listMedic };
+const listMedicOne = {
+  handler: `${handlerPath(__dirname)}/controller/MedicController.listOne`,
+};
+
+const insertMedic = {
+  handler: `${handlerPath(__dirname)}/controller/MedicController.insert`,
+};
+
+export { listMedic, listMedicOne, insertMedic };

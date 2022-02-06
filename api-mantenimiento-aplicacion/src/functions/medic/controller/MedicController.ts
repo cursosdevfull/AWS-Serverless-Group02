@@ -8,13 +8,14 @@ class MedicController {
   }
 
   static async listOne(event) {
-    return {
-      statusCode: 200,
-      message: "List One",
-      data: { id: 1, name: "Medic1" },
-    };
+    return service.listOne(event);
+  }
+
+  static async insert(event) {
+    return service.insert(event);
   }
 }
 
 export const list = MedicController.list;
 export const listOne = MedicController.listOne;
+export const insert = MedicController.insert;

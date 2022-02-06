@@ -1,1 +1,1 @@
-export { listMedic, listOneMedic } from "./medic/handlers";
+export { listMedic, listOneMedic, insertMedic } from "./medic/handlers";
