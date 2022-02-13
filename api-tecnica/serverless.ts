@@ -19,6 +19,23 @@ const serverlessConfiguration: AWS = {
       serverSideEncryption: "AES256",
     },
     lambdaHashingVersion: "20201221",
+    iam: {
+      role: {
+        name: "api-tecnica-role",
+        statements: [
+          {
+            Effect: "Allow",
+            Action: "s3:GetObject",
+            Resource: "arn:aws:s3:::cursoaws02/*",
+          },
+          {
+            Effect: "Allow",
+            Action: "ses:SendEmail",
+            Resource: "*",
+          },
+        ],
+      },
+    },
   },
   // import the function via paths
   functions: { mailNewMedic },

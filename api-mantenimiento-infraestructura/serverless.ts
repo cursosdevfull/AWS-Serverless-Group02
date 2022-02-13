@@ -19,6 +19,10 @@ const serverlessConfiguration: AWS = {
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
       SQS_QUEUE_URL:
         "${cf:api-mantenimiento-infraestructura-dev.SQSColaCursoUrl}",
+      SECRET_DATABASE: "/aws02/dev/database",
+      DATABASE_NAME: "/curso02/dev/database_name",
+      SNS_TOPIC_ARN:
+        "${cf:api-mantenimiento-infraestructura-dev.SNSCursoTopicoArn}",
     },
     deploymentBucket: {
       name: "api-mantenimiento-infraestructura-deploy",
@@ -33,6 +37,12 @@ const serverlessConfiguration: AWS = {
             Resource: [
               "${cf:api-mantenimiento-infraestructura-dev.SQSColaCursoArn}",
             ],
+          },
+          {
+            Effect: "Allow",
+            Action: "SNS:Publish",
+            Resource:
+              "${cf:api-mantenimiento-infraestructura-dev.SNSCursoTopicoArn}",
           },
         ],
       },
@@ -62,6 +72,12 @@ const serverlessConfiguration: AWS = {
           QueueName: "SQSColaCurso",
         },
       },
+      SNSCursoTopico: {
+        Type: "AWS::SNS::Topic",
+        Properties: {
+          TopicName: "SNSCursoTopico",
+        },
+      },
     },
     Outputs: {
       SQSColaCursoArn: {
@@ -69,6 +85,12 @@ const serverlessConfiguration: AWS = {
       },
       SQSColaCursoUrl: {
         Value: { Ref: "SQSColaCurso" },
+      },
+      SNSCursoTopicoArn: {
+        Value: { Ref: "SNSCursoTopico" },
+      },
+      SNSCursoTopicoName: {
+        Value: { "Fn::GetAtt": ["SNSCursoTopico", "TopicName"] },
       },
     },
   },

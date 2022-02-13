@@ -1,15 +1,17 @@
 import { formatJSONResponse } from "@libs/apiGateway";
 import { middyfy } from "@libs/lambda";
-import { MailsService } from "../services/MailsService";
+import { MailsService, OptionsEmail } from "../services/MailsService";
 
 export class MailsController {
   static async mailNewMedic(request) {
+    const optionsEmail: OptionsEmail = JSON.parse(request.Records[0].body);
+
     const service: MailsService = new MailsService();
-    await service.mailNewMedic(request);
+    await service.sentMail(optionsEmail);
     return formatJSONResponse({
       data: "Mails New Medic send",
     });
   }
 }
 
-export const list = middyfy(MailsController.mailNewMedic);
+export const mailNewMedic = middyfy(MailsController.mailNewMedic);

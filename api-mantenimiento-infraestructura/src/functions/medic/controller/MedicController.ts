@@ -1,10 +1,12 @@
 import { formatJSONResponse } from "@libs/apiGateway";
 import { middyfy } from "@libs/lambda";
 import { MedicService } from "../services/MedicService";
+import { NotificationService } from "../services/NotificationService";
 
+const notification: NotificationService = new NotificationService();
+const service: MedicService = new MedicService(notification);
 export class MedicController {
   static async list() {
-    const service: MedicService = new MedicService();
     const data = await service.listMedics();
     return formatJSONResponse({
       data,
@@ -12,7 +14,6 @@ export class MedicController {
   }
 
   static async listOne(request) {
-    const service: MedicService = new MedicService();
     const data = await service.listMedicOne(+request.id);
     return formatJSONResponse({
       data,
@@ -20,7 +21,6 @@ export class MedicController {
   }
 
   static async insert(request) {
-    const service: MedicService = new MedicService();
     const data = await service.insert(request);
     return formatJSONResponse({
       data,

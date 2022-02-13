@@ -1,11 +1,13 @@
+import { OptionsEmail } from "@libs/options-email.interface";
 import { CoreConnection } from "../db/connections/coreConnection";
 import { MedicDB } from "../db/connections/medicDb";
-import * as aws from "aws-sdk";
-
-const sqs = new aws.SQS();
+import { NotificationService } from "./NotificationService";
 
 export class MedicService {
   private dbQuery;
+
+  constructor(private notificationService: NotificationService) {}
+
   private async connectToDatabase() {
     const coreConnection = new CoreConnection();
     const connection = await coreConnection.getConnection();
@@ -24,26 +26,23 @@ export class MedicService {
     return result[0];
   }
 
-  async insert(body: object) {
+  async insert(body: any) {
     await this.connectToDatabase();
     await this.dbQuery.insert(body);
-    await this.sendMail();
+
+    const optionsEmail: OptionsEmail = {
+      source: "sergiohidalgocaceres@gmail.com",
+      addresses: [body.email],
+      subject: "Bienvenido a la plataforma de medicos",
+      template: {
+        nameBucket: "cursoaws02",
+        key: "index.html",
+      },
+      data: [{ name: body.name }, { lastname: body.lastname }],
+    };
+
+    await this.notificationService.sentEmail(optionsEmail);
+    await this.notificationService.sentMessageSNS(optionsEmail);
     return body;
-  }
-
-  async sendMail() {
-    const body = {
-      name: "Juan",
-      lastname: "Pérez",
-      email: "juan.perez@correo.com",
-    };
-    const queueUrl = process.env.SQS_QUEUE_URL;
-
-    const params = {
-      MessageBody: JSON.stringify(body),
-      QueueUrl: queueUrl,
-    };
-
-    await sqs.sendMessage(params).promise();
   }
 }
