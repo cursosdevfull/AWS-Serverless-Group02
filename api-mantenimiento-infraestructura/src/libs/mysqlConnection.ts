@@ -2,12 +2,12 @@ import * as mysql from "mysql2/promise";
 import * as AWS from "aws-sdk";
 
 export class MySQLConnection {
-  config = {
+  /* config = {
     user: "admin",
     password: "3lMUnd0esANcho2020#",
     host: "database-1.cmuv7any6zxa.us-east-1.rds.amazonaws.com",
     database: "awsgroup02",
-  };
+  }; */
 
   async getParamatersConnection() {
     const client = new AWS.SecretsManager({ region: "us-east-1" });

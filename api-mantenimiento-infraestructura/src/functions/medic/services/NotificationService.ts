@@ -15,11 +15,16 @@ export class NotificationService {
   }
 
   async sentMessageSNS(body: any) {
-    const message = {
-      Message: "Hello World",
+    const message: aws.SNS.PublishInput = {
+      Message: JSON.stringify(body),
       TopicArn: process.env.SNS_TOPIC_ARN,
     };
 
-    await sns.publish(message).promise();
+    console.log("topic arn", process.env.SNS_TOPIC_ARN);
+
+    const result = await sns.publish(message).promise();
+    console.log("result", result);
+
+    return true;
   }
 }

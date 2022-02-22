@@ -41,7 +41,8 @@ export class MedicService {
       data: [{ name: body.name }, { lastname: body.lastname }],
     };
 
-    await this.notificationService.sentEmail(optionsEmail);
+    // await this.notificationService.sentEmail(optionsEmail);
+
     await this.notificationService.sentMessageSNS(optionsEmail);
     return body;
   }

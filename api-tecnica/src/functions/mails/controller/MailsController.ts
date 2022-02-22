@@ -4,7 +4,12 @@ import { MailsService, OptionsEmail } from "../services/MailsService";
 
 export class MailsController {
   static async mailNewMedic(request) {
-    const optionsEmail: OptionsEmail = JSON.parse(request.Records[0].body);
+    console.log("request: " + JSON.stringify(request));
+    const body = JSON.parse(request.Records[0].body);
+    const optionsEmail: OptionsEmail = JSON.parse(
+      // request.Records[0].Sns.Message
+      body.Message
+    );
 
     const service: MailsService = new MailsService();
     await service.sentMail(optionsEmail);
