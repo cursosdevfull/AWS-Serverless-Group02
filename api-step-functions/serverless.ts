@@ -32,6 +32,16 @@ const serverlessConfiguration: ServerlessStepFunctions = {
             Action: ["states:ListStateMachines", "states:StartExecution"],
             Resource: "arn:aws:states:::*:*",
           },
+          {
+            Effect: "Allow",
+            Action: "sqs:SendMessage",
+            Resource: "arn:aws:states:*:*:*",
+          },
+          {
+            Effect: "Allow",
+            Action: "lambda:InvokeFunction",
+            Resource: "arn:aws:lambda:*:*:*",
+          },
         ],
       },
     },
@@ -54,14 +64,66 @@ const serverlessConfiguration: ServerlessStepFunctions = {
                   NumericGreaterThan: 500,
                   Next: "step02",
                 },
+                {
+                  Variable: "$.number",
+                  NumericLessThanEquals: 500,
+                  Next: "Parallel",
+                },
               ],
+            },
+            Parallel: {
+              Type: "Parallel",
+              Branches: [
+                {
+                  StartAt: "step01",
+                  States: {
+                    step01: {
+                      Type: "Task",
+                      Resource: { "Fn::GetAtt": ["step01", "Arn"] },
+                      End: true,
+                    },
+                  },
+                },
+                {
+                  StartAt: "step03",
+                  States: {
+                    step03: {
+                      Type: "Task",
+                      Resource: { "Fn::GetAtt": ["step03", "Arn"] },
+                      End: true,
+                    },
+                  },
+                },
+              ],
+              End: true,
             },
             step02: {
               Type: "Task",
               Resource: { "Fn::GetAtt": ["step02", "Arn"] },
+              Next: "sqs",
+            },
+            sqs: {
+              Type: "Task",
+              Resource: "arn:aws:states:::sqs:sendMessage",
+              Parameters: {
+                "MessageBody.$": "$",
+                QueueUrl: {
+                  Ref: "SQSSFT",
+                },
+              },
               End: true,
             },
           },
+        },
+      },
+    },
+  },
+  resources: {
+    Resources: {
+      SQSSFT: {
+        Type: "AWS::SQS::Queue",
+        Properties: {
+          QueueName: "SQSSFT",
         },
       },
     },

@@ -1,6 +1,7 @@
 class Step02Controller {
-  static receiveStep02(event) {
+  static async receiveStep02(event) {
     console.log(event);
+    return event;
   }
 }
 
